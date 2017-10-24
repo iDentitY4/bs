@@ -9,17 +9,20 @@
 void read_command(char *com, char **par)
 {
     fprintf(stdout, "$ ");
-
+printf("test");
     char input [COMMAND_MAX_CHARS];
+    printf("test");
     fgets(input, COMMAND_MAX_CHARS, stdin);
-
-    fflush(stdin);
 
     //remove newline
     input[strcspn(input, "\n")] = 0;
 
+printf("test");
+
     //first token is the command
     strcpy(com, strtok(input, " "));
+
+
 
     //all following tokens are parameters for the command
     char * tok;
@@ -28,8 +31,9 @@ void read_command(char *com, char **par)
     {
       strcpy(par[i], tok);
     }
+    par[i] = 0;
 
-    printf("read: %s %s %s", com, par[0], par[1]);
+    printf("read: %s %s", com, par[0]);
 
     return;
 }
@@ -56,7 +60,7 @@ int main()
         }
         else if(childPid == 0) /* child */
         {
-            printf("executing command: %s\n", command);
+            printf("executing command: %s %s\n", command, parameters[0]);
             execvp(command, parameters);
             exit(0);
         }
