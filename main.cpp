@@ -28,7 +28,7 @@ int read_command(char *com, char **par)
     char * tok;
     if((tok = strtok(input, " ")) == NULL)
     {
-      return;
+      return 0;
     }
     strcpy(com, tok);
 
@@ -161,7 +161,7 @@ int main()
         }
         else // parent process
         {
-            if(parameters[numParameters-1] != "&")
+            if(numParams > 1 && parameters[numParams-1] != "&")
             {
                 waitpid(childPid, &status, WUNTRACED | WCONTINUED);
             }
