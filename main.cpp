@@ -12,7 +12,7 @@
 #define COMMAND_MAX_CHARS 512
 #define PARAM_MAX_SIZE 60
 
-int read_command(char *com, char **par)
+bool read_command(char *com, char **par)
 {
     char dir [1024];
     fprintf(stdout, "%s > ", getcwd(dir, 1024));
@@ -42,10 +42,16 @@ int read_command(char *com, char **par)
         par[i] = (char *) malloc(sizeof(char) * PARAM_MAX_SIZE);
         strcpy(par[i], tok);
     }
+    bool backgroundP = false;
+    if(par[i-1][0] == '&')
+    {
+        backgroundP = true;
+        --i;
+    }
     par[i] = (char *) malloc(1);
     par[i] = NULL;
 
-    return i;
+    return backgroundP;
 }
 
 void handleQuit(int)
@@ -123,7 +129,7 @@ int main()
 
     while(1)
     {
-        int numParams = read_command(command, parameters);
+        bool background = read_command(command, parameters);
 
         log(logFile, command, parameters);
 
@@ -161,7 +167,7 @@ int main()
         }
         else // parent process
         {
-            if(numParams > 1 && parameters[numParams-1] != "&")
+            if(!background)
             {
                 waitpid(childPid, &status, WUNTRACED | WCONTINUED);
             }
